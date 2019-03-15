@@ -12,6 +12,7 @@
 
 
 
+
 <body>
 
 <!-- HTML Portion -->
@@ -33,7 +34,9 @@
 </div>
     <!--User output categories -->
     <div class = container>
-        <h3>Can You Guess What Letter I Am Thinking Of?</h3>
+        <!-- first establish the initial title -->
+        <h3 id="Title">Do You Want Play A Letter Guessing Game?</h3>
+         <!-- id="Title">Can You Guess What Letter I Am Thinking Of?</h3> -->
         <br>
         <ul>
             <p id="Wins"> Wins: </p>
@@ -86,71 +89,160 @@
 <!-- if incorrect, subtract a number from guesses left/and add the later to guess so far -->
 <!-- if the user guesses incorrectly too many times, reset guesses tried, generate a new letter, and add a loss to the losses -->
 <!-- if the user is correct, reset game, and add a point to the wins -->
-    
+   
+
+
+
+
+
+<!-- ### -->
+
+
     <script>
+        //####on key press, check if user wants to plat game.
+
+        // document.onkeypress=function(e) {
+        
+        //     e = e || window.event;
+        //     console.log(e);
+        //     // prompt user to guess a letter, 
+        //     if (e.key === "y") {
+        //         document.getElementById("Title").innerHTML = "Can You Guess What Letter I Am Thinking Of?";
+        //         console.log("PLay");
+
+        //     }
+        //     else if (e.key === "n") {
+        //         console.log('Boring ahhhh');
+
+        //     }
+        //     else {
+        //         console.log("fuck YOU");
+        //     }
+        // }
+            window.addEventListener("keypress", playGame, false);
+        function playGame (e)  {
+
+            e = e || window.event;
+            console.log(e);
+            // prompt user to guess a letter, 
+            if (e.key === "y") {
+                document.getElementById("Title").innerHTML = "Can You Guess What Letter I Am Thinking Of?";
+                console.log("PLay");
+                window.removeEventListener("keypress", playGame, false);
+                window.addEventListener('keypress', checkUsersGuess, false);
+            }
+            else if (e.key === "n") {
+                console.log('Boring ahhhh');
+
+            }
+            else {
+                console.log("fuck YOU");
+            }
+        }
+
         var letterChoices = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "z"];
-        var wannaPlay = confirm("Do You Wanna Play A Letter Guessing Game?");
-
-        if (wannaPlay) {
-            alert("Click OK when you're ready");
-            console.log("Wants to play");
-        }
-        else {
-            alert("Booooooring");
-            console.log("Does Not Want To Play...");
-            
-            //*** close out program after pressing "ok"  
-        }
-
-        var wins = 0;
-        var losses= 0;
-        var guessesLeft = 9; // number of guesses the user has
-        var userChoice = [];
-
-
         var cpuLetter = letterChoices[Math.floor(Math.random() * letterChoices.length)];
-        console.log("CPU picked letter: " + cpuLetter);
+        let count = 9;
 
-        var userChoice = prompt("Please Guess A letter: ");
-        console.log("User guessed Letter: " + userChoice);
+            var wins = 0;
+            var losses= 0;
+            var total = 0; // number of guesses the user has
+            var userChoice = [];
+
+        function checkUsersGuess (e) {
+            e = e || window.event;
+            console.log('USERS CHOICE', e.key);
+            var usersGuess = e.key;
+
+// .push adds string to the END of the array
+            userChoice.push(usersGuess);
+
+//  .toString turns array into a string
+            document.getElementById("picks").innerHTML = "Your Guesses So Far: " + userChoice.toString();
+
+            console.log("CPU picked letter: " + cpuLetter);
 
 
+// didn't need to user a "for loop" since we are using the event. "key press".
+//  use .getElementByID to update the wins column in User interface, place in each conditional.
+//  use   cpuLetter = letterChoices[Math.floor(Math.random() * letterChoices.length)]; in each conditional to generate a new letter.
 
-
-
-        for (var guessesLeft = 9; guessesLeft < 0; guessesLeft--) {
-            
-        
-
-        if ( userChoice == cpuLetter ) {
-            document.querySelector("#Wins").innerHTML = "Wins: " + wins;
+            if (usersGuess === cpuLetter) {
+                console.log('CORRECT' + wins);
+                count = 9;
                 wins++;
-                console.log("winner");
-        }
+                userChoice = [];
+                document.getElementById('Wins').innerHTML = 'Wins: ' + wins;
+                cpuLetter = letterChoices[Math.floor(Math.random() * letterChoices.length)];
 
-        else if (userChoice != cpuLetter) {
-            var userChoice = prompt("Please Guess A letter: ");
-            console.log("User guessed Letter: " + userChoice);
-            console.log("nah wrong letter try again");
-        }
-        else{
-            console.log("loser");
+
+            } else {
+                count--;
+                document.getElementById("guessesLeft").innerHTML = "guessesLeft: " + count;
+            }
+            console.log(count)
+            if (count === total) {
+                console.log('FAIL', count, losses);
+                count = 9;
+                losses++;
+                userChoice = [];
+                document.getElementById("Losses").innerHTML = "Losses: "+ losses;
+                cpuLetter = letterChoices[Math.floor(Math.random() * letterChoices.length)];
+            }
         }
         
+// #####
+
+
+
+
+
+
+// adjusted for loop
+
+  
+            // e stands for event
+
+            // document.onkeypress=function(e) {
+            // e = e || window.event;
+            // console.log(e);
+
+            // }
+        for (let i = 9; i == 0; i--) {
+
+          
+
+            if ( userChoice == cpuLetter ) {
+                document.getElementByID("Wins").innerHTML = "Wins: " + wins;
+                    wins++;
+                    console.log("winner");
+            }
+
+            else if (userChoice != cpuLetter) {
+                // var userChoice = prompt("Please Guess A letter: ");
+                console.log("User guessed Letter: " + userChoice);
+                console.log("nah wrong letter try again");
+            }
+            else{
+                console.log("loser");
+            }
+        
         }
-// .getElementById() wasn't working for me, so I tried .querySelector()
-       function guessRemainder() {
-            document.querySelector("#guessesLeft").innerHTML = "Guesses Left: " + (guessesLeft--);
-            console.log("guesses left: " + guessesLeft);
-        }
+// .getElementById() wasn't working for me, so I tried .getElementById()
+
+
+    //    function guessRemainder() {
+    //         document.getElementById("guessesLeft").innerHTML = "Guesses Left: " + (i--);
+    //         console.log("guesses left: " + i);
+    //     }
 
         
-        function playerLetter() {
-	    document.querySelector("#picks").innerHTML = "Your Guesses so far: " + userChoice.join(' ');
-        }
+    //     function playerLetter() {
+	//     document.getElementById("picks").innerHTML = "Your Guesses so far: " + userChoice.join(' ');
+    //     }
         
 
-        guessRemainder();
+    //     guessRemainder();
 
 
 
@@ -160,15 +252,15 @@
 
 
 
-//     // for (var guessesLeft = 9; guessesLeft < 0; guessesLeft--);
+//     // for (var i = 9; i < 0; i--);
 //     //     if ( userChoice === cpuLetter ) {
-//     //             document.querySelector("#Wins").innerHTML = "Wins: " + wins++;
+//     //             document.getElementById("#Wins").innerHTML = "Wins: " + wins++;
 //     //             wins++;
 //     //             console.log("winner");
 
 //     //         }
 //     //         else {
-//     //             document.querySelector("#Losses").innerHTML = "Losses: " + losses++;
+//     //             document.getElementById("#Losses").innerHTML = "Losses: " + losses++;
 //     //             console.log("wrong");
                
 //     //         };
@@ -179,7 +271,7 @@
 
 
 //         function playerLetter () {
-//             document.querySelector("#picks").innerHTML = "Your Guesses So Far: " + userChoice;
+//             document.getElementById("#picks").innerHTML = "Your Guesses So Far: " + userChoice;
 //             console.log("guesses ");
 //         }
 
@@ -193,15 +285,15 @@
 
 // guessRemainder();
 
-// for (var guessesLeft = 9; guessesLeft < 0; guessesLeft--);
+// for (var i = 9; i < 0; i--);
 //         if ( userChoice === cpuLetter ) {
-//                 document.querySelector("#Wins").innerHTML = "Wins: " + wins++;
+//                 document.getElementById("#Wins").innerHTML = "Wins: " + wins++;
 //                 wins++;
 //                 console.log("winner");
 
 //             }
 //             else {
-//                 document.querySelector("#Losses").innerHTML = "Losses: " + losses++;
+//                 document.getElementById("#Losses").innerHTML = "Losses: " + losses++;
 //                 console.log("wrong");
                
 //             };
@@ -218,16 +310,16 @@
 
 
 
-        // for (guessesLeft; guessesLeft < 0; guessesLeft--) {
+        // for (i; i < 0; i--) {
     
         //     if ( userChoice === cpuLetter ) {
-        //         document.querySelector(wins).innerHTML = "Wins: " + wins;
+        //         document.getElementById(wins).innerHTML = "Wins: " + wins;
         //         wins++;
         //         console.log("winner");
 
         //     }
-        //     else if ( guessesLeft === 0 ) {
-        //         document.querySelector(wins).innerHTML = "Wins: " + wins;
+        //     else if ( i === 0 ) {
+        //         document.getElementById(wins).innerHTML = "Wins: " + wins;
         //         losses++;
         //         restart ();
         //     }
